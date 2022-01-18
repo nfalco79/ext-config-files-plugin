@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.nfalco79</groupId>
     <artifactId>ext-config-files-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>hpi</packaging>
     <name>Extension of config files provider Plugin</name>
     <description>Extension of config files provider plugin to manage other kind of configuration files with credentials.</description>
@@ -36,7 +36,7 @@
         <url>https://github.com/nfalco79/ext-config-files-plugin</url>
         <connection>scm:git:git@github.com:nfalco79/ext-config-files-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:nfalco79/ext-config-files-plugin.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>ext-config-files-plugin-1.0.0</tag>
     </scm>
 
     <properties>
