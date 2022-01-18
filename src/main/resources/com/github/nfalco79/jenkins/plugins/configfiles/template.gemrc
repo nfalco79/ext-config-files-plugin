@@ -1,0 +1,32 @@
+---
+
+# Bulk threshold value. If the number of missing gems are above this threshold value, then a bulk download technique is used. (deprecated)
+# :bulk_threshold: 1000
+
+# true if we print backtraces on errors.
+# :backtrace: false
+
+# true if we want to force specification of gem server when pushing a gem
+# :disable_default_gem_server: false
+
+# Where to install gems (deprecated)
+# :home: /var/lib/...
+
+# Where to look for gems (deprecated)
+# :path: /var/lib/...
+
+# Path name of directory or file of openssl CA certificate, used for remote https connection
+# :ssl_ca_cert: /etc/cert/host.cert
+
+# an Array of sources to fetch remote gems from
+# :sources:
+# - https://user:${ARTIFACTORY_PASSWORD}@artifactory.com/api/gems/gems-release/
+
+# True if we want to update the SourceInfoCache every time, false otherwise
+# :update_sources: true
+
+# Verbose level of output
+# - false – No output
+# - true – Normal output
+# - :loud – Extra output
+# :verbose: true
