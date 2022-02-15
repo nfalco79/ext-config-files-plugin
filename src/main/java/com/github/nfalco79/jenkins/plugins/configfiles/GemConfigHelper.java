@@ -28,15 +28,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import com.cloudbees.plugins.credentials.domains.HostnameRequirement;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.Util;
 import hudson.model.Run;
 import hudson.util.Secret;
@@ -151,8 +150,8 @@ public final class GemConfigHelper {
         return gemrc.toString();
     }
 
-    @Nonnull
-    private String fixURL(@Nonnull final String registryURL) {
+    @NonNull
+    private String fixURL(@NonNull final String registryURL) {
         String url = registryURL;
         if (!url.endsWith("/")) {
             url += "/";
@@ -160,8 +159,8 @@ public final class GemConfigHelper {
         return url;
     }
 
-    @Nonnull
-    public String calculatePrefix(@Nonnull final String registryURL) {
+    @NonNull
+    public String calculatePrefix(@NonNull final String registryURL) {
         String trimmedURL = trimSlash(registryURL);
 
         URL url = toURL(trimmedURL);
@@ -172,8 +171,8 @@ public final class GemConfigHelper {
         return "//" + trimmedURL.substring((url.getProtocol() + "://").length()) + '/';
     }
 
-    @Nonnull
-    public String compose(@Nonnull final String registryPrefix, @Nonnull final String setting) {
+    @NonNull
+    public String compose(@NonNull final String registryPrefix, @NonNull final String setting) {
         return registryPrefix + ":" + setting;
     }
 

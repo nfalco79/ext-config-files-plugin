@@ -23,9 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.lib.configprovider.AbstractConfigProviderImpl;
@@ -42,8 +39,9 @@ import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import com.github.nfalco79.jenkins.plugins.configfiles.util.CredentialsUtil;
-import com.github.nfalco79.jenkins.plugins.configfiles.Messages;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
@@ -71,7 +69,7 @@ public class GemConfig extends Config {
     private final List<GemSource> sources;
 
     @DataBoundConstructor
-    public GemConfig(@Nonnull String id, String name, String comment, String content, List<GemSource> sources) {
+    public GemConfig(@NonNull String id, String name, String comment, String content, List<GemSource> sources) {
         super(id, Util.fixEmptyAndTrim(name), Util.fixEmptyAndTrim(comment), Util.fixEmptyAndTrim(content));
         this.sources = sources == null ? new ArrayList<>(3) : sources;
     }
@@ -123,7 +121,7 @@ public class GemConfig extends Config {
         }
 
         @Override
-        public Config newConfig(@Nonnull String configId) {
+        public Config newConfig(@NonNull String configId) {
             return new GemConfig(configId, "MyGemConfig", "user config", loadTemplateContent(), null);
         }
 

@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.31</version>
+        <version>4.34</version>
     </parent>
 
     <groupId>com.github.nfalco79</groupId>
@@ -41,7 +41,7 @@
 
     <properties>
         <java.level>8</java.level>
-        <jenkins.version>2.303.1</jenkins.version>
+        <jenkins.version>2.319.1</jenkins.version>
         <sonar.organization>nfalco79</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <releaseProfiles>release</releaseProfiles>
@@ -74,7 +74,7 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.303.x</artifactId>
+                <artifactId>bom-2.319.x</artifactId>
                 <version>1148.v7261f385f859</version>
                 <scope>import</scope>
                 <type>pom</type>
@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>config-file-provider</artifactId>
-            <version>3.8.2</version>
+            <version>3.9.0</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -124,7 +124,12 @@
 
     <profiles>
         <profile>
-            <id>enable-jacoco</id>
+            <id>coverage</id>
+            <activation>
+                <property>
+                    <name>env.COVERALLS_REPO_TOKEN</name>
+                </property>
+            </activation>
             <build>
                 <pluginManagement>
                     <plugins>

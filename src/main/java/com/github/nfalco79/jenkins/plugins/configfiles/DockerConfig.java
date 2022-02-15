@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.lib.configprovider.model.Config;
@@ -31,8 +29,8 @@ import org.jenkinsci.plugins.configfiles.json.JsonConfig;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
-import com.github.nfalco79.jenkins.plugins.configfiles.Messages;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
@@ -52,7 +50,7 @@ public class DockerConfig extends JsonConfig {
     private final List<DockerRegistry> registries;
 
     @DataBoundConstructor
-    public DockerConfig(@Nonnull String id, String name, String comment, String content, List<DockerRegistry> registries) {
+    public DockerConfig(@NonNull String id, String name, String comment, String content, List<DockerRegistry> registries) {
         super(id, Util.fixEmptyAndTrim(name), Util.fixEmptyAndTrim(comment), content == null ? "" : content);
         this.registries = registries == null ? new ArrayList<>(3) : registries;
     }
@@ -86,7 +84,7 @@ public class DockerConfig extends JsonConfig {
         }
 
         @Override
-        public Config newConfig(@Nonnull String configId) {
+        public Config newConfig(@NonNull String configId) {
             return new DockerConfig(configId, "MyDockerConfig", "user config", loadTemplateContent(), null);
         }
 

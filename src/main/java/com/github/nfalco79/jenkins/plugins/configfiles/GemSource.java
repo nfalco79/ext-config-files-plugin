@@ -20,18 +20,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Pattern;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import com.github.nfalco79.jenkins.plugins.configfiles.util.CredentialsUtil;
-import com.github.nfalco79.jenkins.plugins.configfiles.Messages;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.AbstractDescribableImpl;
@@ -67,7 +65,7 @@ public class GemSource extends AbstractDescribableImpl<GemSource> implements Ser
      * @param credentialsId credentials identifier
      */
     @DataBoundConstructor
-    public GemSource(@Nonnull String url, String credentialsId) {
+    public GemSource(@NonNull String url, String credentialsId) {
         this.url = Util.fixEmpty(url);
         this.credentialsId = Util.fixEmpty(credentialsId);
     }

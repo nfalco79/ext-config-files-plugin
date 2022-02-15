@@ -18,8 +18,6 @@ package com.github.nfalco79.jenkins.plugins.configfiles.util;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.CheckForNull;
-
 import org.acegisecurity.Authentication;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.AncestorInPath;
@@ -34,6 +32,7 @@ import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import com.cloudbees.plugins.credentials.domains.URIRequirementBuilder;
 import com.github.nfalco79.jenkins.plugins.configfiles.Messages;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import hudson.model.Item;
 import hudson.model.Queue;
 import hudson.model.queue.Tasks;

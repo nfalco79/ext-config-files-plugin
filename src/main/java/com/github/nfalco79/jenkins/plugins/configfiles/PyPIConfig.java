@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.lib.configprovider.AbstractConfigProviderImpl;
@@ -31,8 +29,8 @@ import org.jenkinsci.lib.configprovider.model.ContentType;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
-import com.github.nfalco79.jenkins.plugins.configfiles.Messages;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
@@ -52,7 +50,7 @@ public class PyPIConfig extends Config {
     private final List<PyPIServer> servers;
 
     @DataBoundConstructor
-    public PyPIConfig(@Nonnull String id, String name, String comment, String content, List<PyPIServer> servers) {
+    public PyPIConfig(@NonNull String id, String name, String comment, String content, List<PyPIServer> servers) {
         super(id, Util.fixEmptyAndTrim(name), Util.fixEmptyAndTrim(comment), Util.fixEmptyAndTrim(content));
         this.servers = servers == null ? new ArrayList<>(3) : servers;
     }
@@ -94,7 +92,7 @@ public class PyPIConfig extends Config {
         }
 
         @Override
-        public Config newConfig(@Nonnull String configId) {
+        public Config newConfig(@NonNull String configId) {
             return new PyPIConfig(configId, "MyPypircConfig", "user config", loadTemplateContent(), null);
         }
 
