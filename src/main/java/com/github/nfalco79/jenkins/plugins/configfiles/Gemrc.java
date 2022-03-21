@@ -112,10 +112,10 @@ public class Gemrc {
     }
 
     /**
-     * Returns {@literal true} if this config contains the given option.
+     * Returns {@code true} if this config contains the given option.
      *
      * @param option name
-     * @return {@literal true} if this config already contains the specified
+     * @return {@code true} if this config already contains the specified
      *         section
      */
     public boolean contains(String option) {
@@ -165,7 +165,7 @@ public class Gemrc {
      * Returns the value for the specified option as a boolean.
      *
      * @param option name
-     * @return a boolean represented by the property value or {@literal null} if
+     * @return a boolean represented by the property value or {@code null} if
      *         the key doesn't exist or the value associated is empty.
      */
     public Boolean getAsBoolean(String option) {
@@ -180,7 +180,7 @@ public class Gemrc {
      * Returns the value for the specified option as a number.
      *
      * @param option name
-     * @return an integer represented by the property value or {@literal null}
+     * @return an integer represented by the property value or {@code null}
      *         if the key doesn't exist or the value associated is empty.
      */
     public Integer getAsNumber(String option) {
@@ -196,8 +196,8 @@ public class Gemrc {
      *
      * @param option name
      * @param value to set
-     * @return the previous value associated with <tt>key</tt>, or <tt>null</tt>
-     *         if there was no mapping for <tt>key</tt>.
+     * @return the previous value associated with {@code key}, or {@code null}
+     *         if there was no mapping for {@code key}.
      */
     public Object set(String option, Object value) {
         return context.put(option, value);
