@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -33,12 +32,9 @@ import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
-import com.cloudbees.plugins.credentials.CredentialsMatchers;
-import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
-import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import com.github.nfalco79.jenkins.plugins.configfiles.util.CredentialsUtil;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
@@ -48,14 +44,11 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Util;
 import hudson.model.Item;
-import hudson.model.Queue;
+import hudson.model.ItemGroup;
 import hudson.model.Run;
 import hudson.model.TaskListener;
-import hudson.model.queue.Tasks;
-import hudson.security.ACL;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-import jenkins.model.Jenkins;
 
 /**
  * A config/provider to handle the special case of a gem config file.
@@ -126,31 +119,17 @@ public class GemConfig extends Config {
             return new GemConfig(configId, "MyGemConfig", "user config", loadTemplateContent(), null);
         }
 
-        public FormValidation doCheckApiKey(@CheckForNull @AncestorInPath Item item, @QueryParameter String apiKey) {
-            if (item == null) {
-                if (!Jenkins.get().hasPermission(Jenkins.ADMINISTER)) {
-                    return FormValidation.ok();
-                }
-            } else if (!item.hasPermission(Item.EXTENDED_READ) && !item.hasPermission(CredentialsProvider.USE_ITEM)) {
-                return FormValidation.ok();
-            }
-            // apiKey is not required, this method differs from than one in the CredentialsUtil
-            if (StringUtils.isBlank(apiKey)) {
-                return FormValidation.ok();
-            }
-
-            List<DomainRequirement> domainRequirement = Collections.emptyList();
-            if (CredentialsProvider.listCredentials(StandardUsernameCredentials.class, //
-                    item, item instanceof Queue.Task ? Tasks.getAuthenticationOf((Queue.Task) item) : ACL.SYSTEM, //
-                    domainRequirement, //
-                    CredentialsMatchers.withId(apiKey)).isEmpty()) {
-                return FormValidation.error(Messages.invalidCredentialsId());
-            }
-            return FormValidation.ok();
+        @POST
+        public FormValidation doCheckApiKey(@CheckForNull @AncestorInPath Item projectOrFolder, //
+                                            @QueryParameter String apiKey) {
+            return CredentialsUtil.doCheckCredentialsId(projectOrFolder, apiKey, null);
         }
 
-        public ListBoxModel doFillApiKeyItems(final @AncestorInPath Item item, @QueryParameter String apiKey) {
-            return CredentialsUtil.doFillCredentialsIdItems(item, apiKey, null);
+        @POST
+        public ListBoxModel doFillApiKeyItems(final @CheckForNull @AncestorInPath ItemGroup<?> context, //
+                                              final @CheckForNull @AncestorInPath Item projectOrFolder, //
+                                              @QueryParameter String apiKey) {
+            return CredentialsUtil.doFillCredentialsIdItems(context, projectOrFolder, apiKey, null);
         }
 
         protected String loadTemplateContent() {

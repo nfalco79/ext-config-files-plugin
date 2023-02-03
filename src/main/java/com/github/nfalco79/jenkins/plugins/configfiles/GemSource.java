@@ -36,6 +36,7 @@ import hudson.Util;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import hudson.model.Item;
+import hudson.model.ItemGroup;
 import hudson.util.FormValidation;
 import hudson.util.FormValidation.Kind;
 import hudson.util.ListBoxModel;
@@ -152,10 +153,11 @@ public class GemSource extends AbstractDescribableImpl<GemSource> implements Ser
             return CredentialsUtil.doCheckCredentialsId(item, credentialsId, serverUrl);
         }
 
-        public ListBoxModel doFillCredentialsIdItems(final @AncestorInPath Item item,
+        public ListBoxModel doFillCredentialsIdItems(final @CheckForNull @AncestorInPath ItemGroup<?> context, //
+                                                     final @CheckForNull @AncestorInPath Item projectOrFolder, //
                                                      @QueryParameter String credentialsId,
                                                      final @QueryParameter String url) {
-            return CredentialsUtil.doFillCredentialsIdItems(item, credentialsId, url);
+            return CredentialsUtil.doFillCredentialsIdItems(context, projectOrFolder, credentialsId, url);
         }
 
         @Override

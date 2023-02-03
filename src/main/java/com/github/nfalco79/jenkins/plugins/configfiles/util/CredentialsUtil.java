@@ -16,7 +16,6 @@
  */
 package com.github.nfalco79.jenkins.plugins.configfiles.util;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.acegisecurity.Authentication;
@@ -28,15 +27,19 @@ import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
+import com.cloudbees.plugins.credentials.common.StandardUsernameListBoxModel;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import com.cloudbees.plugins.credentials.domains.URIRequirementBuilder;
 import com.github.nfalco79.jenkins.plugins.configfiles.Messages;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import hudson.model.Item;
+import hudson.model.ItemGroup;
 import hudson.model.Queue;
 import hudson.model.queue.Tasks;
 import hudson.security.ACL;
+import hudson.security.AccessControlled;
+import hudson.security.Permission;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
@@ -46,23 +49,21 @@ public final class CredentialsUtil {
     private CredentialsUtil() {
     }
 
-    public static FormValidation doCheckCredentialsId(@CheckForNull @AncestorInPath Item item,
+    public static FormValidation doCheckCredentialsId(@CheckForNull @AncestorInPath Item projectOrFolder,
                                                @QueryParameter String credentialsId,
                                                @QueryParameter String url) {
-        if (item == null) {
-            if (!Jenkins.get().hasPermission(Jenkins.ADMINISTER)) {
-                return FormValidation.ok();
-            }
-        } else if (!item.hasPermission(Item.EXTENDED_READ) && !item.hasPermission(CredentialsProvider.USE_ITEM)) {
+        if ((projectOrFolder == null && !Jenkins.get().hasPermission(Jenkins.ADMINISTER)) ||
+                (projectOrFolder != null && !projectOrFolder.hasPermission(Item.EXTENDED_READ) && !projectOrFolder.hasPermission(CredentialsProvider.USE_ITEM))) {
             return FormValidation.ok();
         }
         if (StringUtils.isBlank(credentialsId)) {
             return FormValidation.warning(Messages.emptyCredentialsId());
         }
 
-        List<DomainRequirement> domainRequirement = url != null ? URIRequirementBuilder.fromUri(url).build() : Collections.emptyList();
+        List<DomainRequirement> domainRequirement = URIRequirementBuilder.fromUri(url).build();
         if (CredentialsProvider.listCredentials(StandardUsernameCredentials.class, //
-                item, getAuthentication(item), //
+                projectOrFolder, //
+                getAuthentication(projectOrFolder), //
                 domainRequirement, //
                 CredentialsMatchers.withId(credentialsId)).isEmpty()) {
             return FormValidation.error(Messages.invalidCredentialsId());
@@ -70,33 +71,28 @@ public final class CredentialsUtil {
         return FormValidation.ok();
     }
 
-    public static ListBoxModel doFillCredentialsIdItems(final @AncestorInPath Item item,
-                                                 @QueryParameter String credentialsId,
-                                                 final @QueryParameter String url) {
-        StandardListBoxModel result = new StandardListBoxModel();
-
+    public static ListBoxModel doFillCredentialsIdItems(final ItemGroup<?> context, //
+                                                        final @AncestorInPath Item projectOrFolder, //
+                                                        @QueryParameter String credentialsId, //
+                                                        final @QueryParameter String url) {
+        Permission permToCheck = projectOrFolder == null ? Jenkins.ADMINISTER : Item.CONFIGURE;
+        AccessControlled contextToCheck = projectOrFolder == null ? Jenkins.get() : projectOrFolder;
         credentialsId = StringUtils.trimToEmpty(credentialsId);
-        if (item == null) {
-            if (!Jenkins.get().hasPermission(Jenkins.ADMINISTER)) {
-                return result.includeCurrentValue(credentialsId);
-            }
-        } else {
-            if (!item.hasPermission(Item.EXTENDED_READ) && !item.hasPermission(CredentialsProvider.USE_ITEM)) {
-                return result.includeCurrentValue(credentialsId);
-            }
+
+        // If we're on the global page and we don't have administer
+        // permission or if we're in a project or folder
+        // and we don't have configure permission there
+        if (!contextToCheck.hasPermission(permToCheck)) {
+            return new StandardUsernameListBoxModel().includeCurrentValue(credentialsId);
         }
 
-        Authentication authentication = getAuthentication(item);
-        List<DomainRequirement> domainRequirements = url != null ? URIRequirementBuilder.fromUri(url).build() : Collections.emptyList();
+        Authentication authentication = getAuthentication(projectOrFolder);
+        List<DomainRequirement> domainRequirements = URIRequirementBuilder.fromUri(url).build();
         Class<StandardUsernameCredentials> type = StandardUsernameCredentials.class;
 
-        result.includeEmptyValue();
-        if (item != null) {
-            result.includeAs(authentication, item, type, domainRequirements);
-        } else {
-            result.includeAs(authentication, Jenkins.get(), type, domainRequirements);
-        }
-        return result;
+        return new StandardListBoxModel() //
+                .includeAs(authentication, projectOrFolder, type, domainRequirements) //
+                .includeEmptyValue();
     }
 
     private static Authentication getAuthentication(final Item item) {

@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 import com.github.nfalco79.jenkins.plugins.configfiles.util.CredentialsUtil;
 
@@ -36,6 +37,7 @@ import hudson.Util;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import hudson.model.Item;
+import hudson.model.ItemGroup;
 import hudson.util.FormValidation;
 import hudson.util.FormValidation.Kind;
 import hudson.util.ListBoxModel;
@@ -136,6 +138,7 @@ public class PyPIServer extends AbstractDescribableImpl<PyPIServer> implements S
 
         private Pattern variableRegExp = Pattern.compile ( "\\$\\{.*\\}" );
 
+        @POST
         public FormValidation doCheckName(@CheckForNull @QueryParameter final String name) {
             if (StringUtils.isBlank(name)) {
                 return FormValidation.error(Messages.PyPIServer_DescriptorImpl_emptyServerName());
@@ -146,6 +149,7 @@ public class PyPIServer extends AbstractDescribableImpl<PyPIServer> implements S
             return FormValidation.ok();
         }
 
+        @POST
         public FormValidation doCheckUrl(@CheckForNull @QueryParameter final String url) {
             if (StringUtils.isBlank(url)) {
                 return FormValidation.error(Messages.emptyServerURL());
@@ -159,16 +163,19 @@ public class PyPIServer extends AbstractDescribableImpl<PyPIServer> implements S
             return FormValidation.ok();
         }
 
-        public FormValidation doCheckCredentialsId(@CheckForNull @AncestorInPath Item item,
+        @POST
+        public FormValidation doCheckCredentialsId(@CheckForNull @AncestorInPath Item projectOrFolder,
                                                    @QueryParameter String credentialsId, //
                                                    @QueryParameter String serverUrl) {
-            return CredentialsUtil.doCheckCredentialsId(item, credentialsId, serverUrl);
+            return CredentialsUtil.doCheckCredentialsId(projectOrFolder, credentialsId, serverUrl);
         }
 
-        public ListBoxModel doFillCredentialsIdItems(final @AncestorInPath Item item, //
+        @POST
+        public ListBoxModel doFillCredentialsIdItems(final @CheckForNull @AncestorInPath ItemGroup<?> context, //
+                                                     final @CheckForNull @AncestorInPath Item projectOrFolder, //
                                                      @QueryParameter String credentialsId, //
                                                      final @QueryParameter String url) {
-            return CredentialsUtil.doFillCredentialsIdItems(item, credentialsId, url);
+            return CredentialsUtil.doFillCredentialsIdItems(context, projectOrFolder, credentialsId, url);
         }
 
         @Override
