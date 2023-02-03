@@ -1,5 +1,6 @@
 /*
  * Copyright 2021 Nikolas Falco
+ *
  * Licensed under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -74,11 +75,11 @@ public class GemConfig extends Config {
         this.sources = sources == null ? new ArrayList<>(3) : sources;
     }
 
-    
+
     public List<GemSource> getSources() {
         return sources;
     }
-    
+
     public String getApiKey() {
         return apiKey;
     }
@@ -105,7 +106,7 @@ public class GemConfig extends Config {
 
     @Extension
     public static class GemConfigProvider extends AbstractConfigProviderImpl {
-        
+
         public GemConfigProvider() {
             load();
         }
@@ -178,7 +179,7 @@ public class GemConfig extends Config {
                 String apiKey = config.getApiKey();
                 if (apiKey != null) {
                     listener.getLogger().println("Adding API Key entry");
-                    fileContent = helper.fillApiKey(fileContent, apiKey, build); 
+                    fileContent = helper.fillApiKey(fileContent, apiKey, build);
                 }
 
                 try {

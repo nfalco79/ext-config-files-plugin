@@ -1,5 +1,6 @@
 /*
  * Copyright 2021 Nikolas Falco
+ *
  * Licensed under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -39,8 +40,6 @@ import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.Domain;
 import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
-import com.github.nfalco79.jenkins.plugins.configfiles.GemConfigHelper;
-import com.github.nfalco79.jenkins.plugins.configfiles.GemSource;
 
 import hudson.model.FreeStyleBuild;
 
@@ -76,12 +75,12 @@ public class GemSourceHelperTest {
     @Test
     public void test_apikey() throws Exception {
         FreeStyleBuild build = j.createFreeStyleProject().createExecutable();
-        
+
         GemConfigHelper helper = new GemConfigHelper(Collections.emptyList());
-        String gemrc = helper.fillApiKey("---\r\n" + 
-                ":backtrace: false\r\n" + 
-                ":bulk_threshold: 1000\r\n" + 
-                ":update_sources: true\r\n" + 
+        String gemrc = helper.fillApiKey("---\r\n" +
+                ":backtrace: false\r\n" +
+                ":bulk_threshold: 1000\r\n" +
+                ":update_sources: true\r\n" +
                 ":verbose: true", user.getId(), build);
         Assertions.assertThat(gemrc).contains(":rubygems_api_key: Basic " + Base64.encodeBase64String("myuser:mypassword".getBytes()));
     }

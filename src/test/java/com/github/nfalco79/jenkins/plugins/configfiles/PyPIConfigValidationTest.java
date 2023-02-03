@@ -1,5 +1,6 @@
 /*
  * Copyright 2021 Nikolas Falco
+ *
  * Licensed under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -23,10 +24,6 @@ import static org.junit.Assert.assertThrows;
 import java.util.Arrays;
 
 import org.junit.Test;
-
-import com.github.nfalco79.jenkins.plugins.configfiles.PyPIConfig;
-import com.github.nfalco79.jenkins.plugins.configfiles.PyPIServer;
-import com.github.nfalco79.jenkins.plugins.configfiles.VerifyConfigProviderException;
 
 public class PyPIConfigValidationTest {
 

@@ -1,5 +1,6 @@
 /*
  * Copyright 2021 Nikolas Falco
+ *
  * Licensed under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -37,9 +38,6 @@ import com.cloudbees.plugins.credentials.CredentialsStore;
 import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
 import com.cloudbees.plugins.credentials.domains.Domain;
 import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
-import com.github.nfalco79.jenkins.plugins.configfiles.PyPIServer;
-import com.github.nfalco79.jenkins.plugins.configfiles.PyPIServerHelper;
-import com.github.nfalco79.jenkins.plugins.configfiles.PyPIrc;
 
 import hudson.model.FreeStyleBuild;
 

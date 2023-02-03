@@ -1,5 +1,6 @@
 /*
  * Copyright 2021 Nikolas Falco
+ *
  * Licensed under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -55,11 +56,11 @@ public class DockerConfig extends JsonConfig {
         this.registries = registries == null ? new ArrayList<>(3) : registries;
     }
 
-    
+
     public List<DockerRegistry> getRegistries() {
         return registries;
     }
-    
+
     /**
      * Perform a validation of the configuration.
      * <p>
@@ -77,7 +78,7 @@ public class DockerConfig extends JsonConfig {
 
     @Extension
     public static class DockerConfigProvider extends JsonConfigProvider {
-        
+
         @Override
         public String getDisplayName() {
             return Messages.DockerConfig_displayName();

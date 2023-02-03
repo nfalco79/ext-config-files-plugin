@@ -1,27 +1,29 @@
 <!--
- - Copyright (c) 2021, Nikolas Falco
- -
- - Licensed under the Apache License, Version 2.0 (the
- - "License"); you may not use this file except in compliance
- - with the License.  You may obtain a copy of the License at
- -
- -   http://www.apache.org/licenses/LICENSE-2.0
- -
- - Unless required by applicable law or agreed to in writing,
- - software distributed under the License is distributed on an
- - "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- - KIND, either express or implied.  See the License for the
- - specific language governing permissions and limitations
- - under the License.
+Copyright 2021 Nikolas Falco
+
+Licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
  -->
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-	<!-- needed for repeatable properties -->
-	<j:set var="instance" value="${config}"/>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+    xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+    xmlns:f="/lib/form">
+    <!-- needed for repeatable properties -->
+    <j:set var="instance" value="${config}" />
 
-	<j:set var="descriptor" value="${config.descriptor}" />
+    <j:set var="descriptor" value="${config.descriptor}" />
 
-    <f:entry title="${%ID}" >
+    <f:entry title="${%ID}">
         <f:textbox readonly="readonly" name="config.id" value="${config.id}" />
     </f:entry>
 
@@ -33,17 +35,17 @@
         <f:textbox readonly="readonly" name="source.apiKey" value="${source.apiKey}" />
     </f:entry>
 
-	<f:entry title="${%source.title}">
-		<table style="width:100%">
-			<j:forEach var="source" items="${config.sources}">
-				<f:entry title="${%source.url}">
-					<f:textbox readonly="readonly" name="source.url" value="${source.url}" />
-				</f:entry>
-			</j:forEach>
-		</table>
-	</f:entry>
+    <f:entry title="${%source.title}">
+        <table style="width:100%">
+            <j:forEach var="source" items="${config.sources}">
+                <f:entry title="${%source.url}">
+                    <f:textbox readonly="readonly" name="source.url" value="${source.url}" />
+                </f:entry>
+            </j:forEach>
+        </table>
+    </f:entry>
 
-	<f:entry title="${%content.title}">
-		<f:textarea readonly="readonly" value="${config.content}" />
-	</f:entry>
+    <f:entry title="${%content.title}">
+        <f:textarea readonly="readonly" value="${config.content}" />
+    </f:entry>
 </j:jelly>

@@ -1,5 +1,6 @@
 /*
  * Copyright 2021 Nikolas Falco
+ *
  * Licensed under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -23,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.QueryParameter;
 
-import com.cloudbees.plugins.credentials.CredentialsMatcher;
 import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
@@ -88,14 +88,13 @@ public final class CredentialsUtil {
 
         Authentication authentication = getAuthentication(item);
         List<DomainRequirement> domainRequirements = url != null ? URIRequirementBuilder.fromUri(url).build() : Collections.emptyList();
-        CredentialsMatcher always = CredentialsMatchers.always();
         Class<StandardUsernameCredentials> type = StandardUsernameCredentials.class;
 
         result.includeEmptyValue();
         if (item != null) {
-            result.includeMatchingAs(authentication, item, type, domainRequirements, always);
+            result.includeAs(authentication, item, type, domainRequirements);
         } else {
-            result.includeMatchingAs(authentication, Jenkins.get(), type, domainRequirements, always);
+            result.includeAs(authentication, Jenkins.get(), type, domainRequirements);
         }
         return result;
     }

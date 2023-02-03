@@ -1,5 +1,6 @@
 /*
- * Copyright 2021 Finantix
+ * Copyright 2021 Nikolas Falco
+ *
  * Licensed under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -21,25 +22,17 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
-import org.mockito.Mockito;
 
 import com.cloudbees.plugins.credentials.Credentials;
 import com.cloudbees.plugins.credentials.CredentialsScope;
 import com.cloudbees.plugins.credentials.SystemCredentialsProvider;
-import com.cloudbees.plugins.credentials.domains.Domain;
 import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
 import com.github.nfalco79.jenkins.plugins.configfiles.DockerRegistry.DescriptorImpl;
 
-import hudson.model.Descriptor;
 import hudson.model.FreeStyleProject;
 import hudson.model.Item;
 import hudson.security.Permission;
@@ -97,7 +90,7 @@ public class DockerRegistryValidatorTest {
     @Test
     public void test_server_url_misssing_protocol() throws Exception {
         DescriptorImpl descriptor = new DescriptorImpl();
-        
+
         FormValidation result = descriptor.doCheckUrl("docker.artifactory.acme.com");
         Assertions.assertThat(result.kind).isEqualTo(Kind.OK);
     }
