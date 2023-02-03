@@ -79,7 +79,8 @@ public class Gemrc {
         options.setDefaultFlowStyle(FlowStyle.BLOCK);
         options.setExplicitStart(true);
 
-        yaml = new Yaml(new Representer(), options);
+        // must pass options to both or some option is lost
+        yaml = new Yaml(new Representer(options), options);
     }
 
     /**
@@ -92,7 +93,10 @@ public class Gemrc {
         if (StringUtils.isBlank(content)) {
             return;
         }
-        context = yaml.load(content);
+        Map<String, Object> tmp = yaml.load(content);
+        if (tmp != null) {
+            context = tmp;
+        }
     }
 
     @Override
