@@ -45,7 +45,7 @@
         <sonar.organization>nfalco79</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <releaseProfiles>release</releaseProfiles>
-        <checkstyle.version>10.12.4</checkstyle.version>
+        <checkstyle.version>10.13.0</checkstyle.version>
     </properties>
 
     <repositories>
