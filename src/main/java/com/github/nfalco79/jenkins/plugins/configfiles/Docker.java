@@ -79,7 +79,7 @@ public class Docker {
         options.setDefaultFlowStyle(FlowStyle.BLOCK);
         options.setExplicitStart(true);
 
-        yaml = new Yaml(new Representer(), options);
+        yaml = new Yaml(new Representer(options));
     }
 
     /**
