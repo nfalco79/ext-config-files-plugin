@@ -45,7 +45,7 @@
         <sonar.organization>nfalco79</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <releaseProfiles>release</releaseProfiles>
-        <checkstyle.version>10.13.0</checkstyle.version>
+        <checkstyle.version>12.1.1</checkstyle.version>
 
         <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
         <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
