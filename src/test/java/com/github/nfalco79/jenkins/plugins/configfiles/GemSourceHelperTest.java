@@ -16,22 +16,18 @@
  */
 package com.github.nfalco79.jenkins.plugins.configfiles;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.CredentialsScope;
@@ -43,38 +39,43 @@ import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
 
 import hudson.model.FreeStyleBuild;
 
+@WithJenkins
 public class GemSourceHelperTest {
 
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
+    private static JenkinsRule r;
+
+    @BeforeAll
+    static void init(JenkinsRule rule) {
+        r = rule;
+    }
+
     private StandardUsernameCredentials user;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         user = new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, "privateId", "dummy desc", "myuser", "mypassword");
-        CredentialsStore store = CredentialsProvider.lookupStores(j.getInstance()).iterator().next();
+        CredentialsStore store = CredentialsProvider.lookupStores(r.getInstance()).iterator().next();
         store.addCredentials(Domain.global(), user);
     }
 
     @Test
-    public void test_registry_credentials_resolution() throws Exception {
+    void test_registry_credentials_resolution() throws Exception {
         GemSource privateSource = new GemSource("https://private.organization.com/", user.getId());
         GemSource officalSource = new GemSource("https://registry.npmjs.org/", null);
 
-        FreeStyleBuild build = j.createFreeStyleProject().createExecutable();
+        FreeStyleBuild build = r.createFreeStyleProject().createExecutable();
 
         GemConfigHelper helper = new GemConfigHelper(Arrays.asList(privateSource, officalSource));
         Map<String, StandardUsernamePasswordCredentials> resolvedCredentials = helper.resolveCredentials(build);
-        assertFalse(resolvedCredentials.isEmpty());
-        assertEquals(1, resolvedCredentials.size());
+        assertThat(resolvedCredentials).isNotEmpty().hasSize(1);
 
-        assertThat(resolvedCredentials.keySet(), hasItem(privateSource.getUrl()));
-        assertThat(resolvedCredentials.get(privateSource.getUrl()), equalTo(user));
+        assertThat(resolvedCredentials.keySet()).contains(privateSource.getUrl());
+        assertThat(resolvedCredentials.get(privateSource.getUrl())).isEqualTo(user);
     }
 
     @Test
-    public void test_apikey() throws Exception {
-        FreeStyleBuild build = j.createFreeStyleProject().createExecutable();
+    void test_apikey() throws Exception {
+        FreeStyleBuild build = r.createFreeStyleProject().createExecutable();
 
         GemConfigHelper helper = new GemConfigHelper(Collections.emptyList());
         String gemrc = helper.fillApiKey("---\r\n" +
@@ -82,7 +83,7 @@ public class GemSourceHelperTest {
                 ":bulk_threshold: 1000\r\n" +
                 ":update_sources: true\r\n" +
                 ":verbose: true", user.getId(), build);
-        Assertions.assertThat(gemrc).contains(":rubygems_api_key: Basic " + Base64.encodeBase64String("myuser:mypassword".getBytes()));
+        assertThat(gemrc).contains(":rubygems_api_key: Basic " + Base64.encodeBase64String("myuser:mypassword".getBytes()));
     }
 
 }

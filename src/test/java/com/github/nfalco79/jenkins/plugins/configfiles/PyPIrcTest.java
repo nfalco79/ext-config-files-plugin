@@ -16,33 +16,29 @@
  */
 package com.github.nfalco79.jenkins.plugins.configfiles;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class PyPIrcTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    private File tmpFolder;
     private File file;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         InputStream is = null;
         try {
             is = getClass().getResourceAsStream("pypirc.config");
-            file = folder.newFile(".pypirc");
+            file = new File(tmpFolder, ".pypirc");
             hudson.util.IOUtils.copy(is, file);
         } finally {
             IOUtils.closeQuietly(is);
@@ -50,20 +46,20 @@ public class PyPIrcTest {
     }
 
     @Test
-    public void testLoad() throws Exception {
+    void testLoad() throws Exception {
         PyPIrc pypirc = PyPIrc.load(file);
-        assertTrue(pypirc.contains("pypi"));
-        assertEquals("https://pypi.python.org/pypi", pypirc.get("pypi", "repository"));
+        assertThat(pypirc.contains("pypi")).isTrue();
+        assertThat(pypirc.get("pypi", "repository")).isEqualTo("https://pypi.python.org/pypi");
     }
 
     @Test
-    public void testAvoidParseError() throws Exception {
+    void testAvoidParseError() throws Exception {
         PyPIrc pypirc = PyPIrc.load(file);
-        assertFalse(pypirc.contains("browser"));
+        assertThat(pypirc.contains("browser")).isFalse();
     }
 
     @Test
-    public void testSave() throws Exception {
+    void testSave() throws Exception {
         String testServer = "artifactory";
         String testKey = "test";
         String testValue = "value";
@@ -74,8 +70,8 @@ public class PyPIrcTest {
 
         // reload content
         pypirc = PyPIrc.load(file);
-        assertTrue(pypirc.contains(testServer));
-        Assertions.assertThat(pypirc.get(testServer, testKey)).isEqualTo(testValue);
+        assertThat(pypirc.contains(testServer)).isTrue();
+        assertThat(pypirc.get(testServer, testKey)).isEqualTo(testValue);
     }
 
 }

@@ -16,30 +16,28 @@
  */
 package com.github.nfalco79.jenkins.plugins.configfiles;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PyPIConfigValidationTest {
 
     @Test
-    public void test_new_config() {
+    void test_new_config() {
         String id = "test_id";
         PyPIConfig config = new PyPIConfig(id, "", "", "", null);
-        assertEquals(id, config.id);
-        assertNull(config.name);
-        assertNull(config.comment);
-        assertNull(config.content);
-        assertNotNull(config.getServers());
+        assertThat(config.id).isEqualTo(id);
+        assertThat(config.name).isNull();
+        assertThat(config.comment).isNull();
+        assertThat(config.content).isNull();
+        assertThat(config.getServers()).isNotNull();
     }
 
     @Test
-    public void test_empty_URL() throws Exception {
+    void test_empty_URL() throws Exception {
         PyPIServer registry = new PyPIServer("", null, null);
 
         PyPIConfig config = new PyPIConfig("empty_URL", null, null, null, Arrays.asList(registry));
@@ -47,7 +45,7 @@ public class PyPIConfigValidationTest {
     }
 
     @Test
-    public void test_no_exception_if_URL_has_variable() throws Exception {
+    void test_no_exception_if_URL_has_variable() throws Exception {
         PyPIServer registry = new PyPIServer("artifactory", "${URL}", null);
 
         PyPIConfig config = new PyPIConfig("no_exception_if_URL_has_variable", null, null, null, Arrays.asList(registry));

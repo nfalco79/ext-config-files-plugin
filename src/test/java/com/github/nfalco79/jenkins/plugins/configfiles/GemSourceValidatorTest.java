@@ -16,16 +16,17 @@
  */
 package com.github.nfalco79.jenkins.plugins.configfiles;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.assertj.core.api.Assertions;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import com.cloudbees.plugins.credentials.Credentials;
 import com.cloudbees.plugins.credentials.CredentialsScope;
@@ -44,51 +45,56 @@ import hudson.util.FormValidation.Kind;
  *
  * @author Nikolas Falco
  */
+@WithJenkins
 public class GemSourceValidatorTest {
 
-    @Rule
-    public JenkinsRule r = new JenkinsRule();
+    private static JenkinsRule r;
+
+    @BeforeAll
+    static void init(JenkinsRule rule) {
+        r = rule;
+    }
 
     @Test
-    public void test_empty_server_url() throws Exception {
+    void test_empty_server_url() throws Exception {
         DescriptorImpl descriptor = new DescriptorImpl();
 
         FormValidation result = descriptor.doCheckUrl("");
-        Assertions.assertThat(result.kind).isEqualTo(Kind.ERROR);
-        Assertions.assertThat(result.getMessage()).isEqualTo(Messages.emptyServerURL());
+        assertThat(result.kind).isEqualTo(Kind.ERROR);
+        assertThat(result.getMessage()).isEqualTo(Messages.emptyServerURL());
     }
 
     @Test
-    public void test_server_url_that_contains_variable() throws Exception {
+    void test_server_url_that_contains_variable() throws Exception {
         DescriptorImpl descriptor = new DescriptorImpl();
 
         FormValidation result = descriptor.doCheckUrl("${REGISTRY_URL}/root");
-        Assertions.assertThat(result.kind).isEqualTo(Kind.OK);
+        assertThat(result.kind).isEqualTo(Kind.OK);
         result = descriptor.doCheckUrl("http://${SERVER_NAME}/root");
-        Assertions.assertThat(result.kind).isEqualTo(Kind.OK);
+        assertThat(result.kind).isEqualTo(Kind.OK);
         result = descriptor.doCheckUrl("http://acme.com/${CONTEXT_ROOT}");
-        Assertions.assertThat(result.kind).isEqualTo(Kind.OK);
+        assertThat(result.kind).isEqualTo(Kind.OK);
     }
 
     @Test
-    public void test_empty_server_url_is_ok() throws Exception {
+    void test_empty_server_url_is_ok() throws Exception {
         DescriptorImpl descriptor = new DescriptorImpl();
 
         FormValidation result = descriptor.doCheckUrl("http://acme.com");
-        Assertions.assertThat(result.kind).isEqualTo(Kind.OK);
+        assertThat(result.kind).isEqualTo(Kind.OK);
     }
 
     @Test
-    public void test_server_url_invalid_protocol() throws Exception {
+    void test_server_url_invalid_protocol() throws Exception {
         DescriptorImpl descriptor = new DescriptorImpl();
 
         FormValidation result = descriptor.doCheckUrl("hpp://acme.com/root");
-        Assertions.assertThat(result.kind).isEqualTo(Kind.ERROR);
-        Assertions.assertThat(result.getMessage()).isEqualTo(Messages.invalidServerURL());
+        assertThat(result.kind).isEqualTo(Kind.ERROR);
+        assertThat(result.getMessage()).isEqualTo(Messages.invalidServerURL());
     }
 
     @Test
-    public void test_invalid_credentials() throws Exception {
+    void test_invalid_credentials() throws Exception {
         FreeStyleProject prj = r.createFreeStyleProject();
 
         String credentialsId = "secret";
@@ -98,15 +104,15 @@ public class GemSourceValidatorTest {
         String serverURL = "http://acme.com";
         DescriptorImpl descriptor = (DescriptorImpl) new GemSource(serverURL, credentialsId).getDescriptor();
         FormValidation result = descriptor.doCheckCredentialsId(prj, credentialsId, serverURL);
-        Assertions.assertThat(result.kind).isEqualTo(Kind.OK);
+        assertThat(result.kind).isEqualTo(Kind.OK);
 
         result = descriptor.doCheckCredentialsId(prj, "foo", serverURL);
-        Assertions.assertThat(result.kind).isEqualTo(Kind.ERROR);
-        Assertions.assertThat(result.getMessage()).isEqualTo(Messages.invalidCredentialsId());
+        assertThat(result.kind).isEqualTo(Kind.ERROR);
+        assertThat(result.getMessage()).isEqualTo(Messages.invalidCredentialsId());
     }
 
     @Test
-    public void test_empty_credentials() throws Exception {
+    void test_empty_credentials() throws Exception {
         FreeStyleProject prj = mock(FreeStyleProject.class);
         when(prj.hasPermission(isA(Permission.class))).thenReturn(true);
 
@@ -116,15 +122,15 @@ public class GemSourceValidatorTest {
         String serverURL = "http://acme.com";
 
         FormValidation result = descriptor.doCheckCredentialsId(prj, "", serverURL);
-        Assertions.assertThat(result.kind).isEqualTo(Kind.WARNING);
-        Assertions.assertThat(result.getMessage()).isEqualTo(Messages.emptyCredentialsId());
+        assertThat(result.kind).isEqualTo(Kind.WARNING);
+        assertThat(result.getMessage()).isEqualTo(Messages.emptyCredentialsId());
         result = descriptor.doCheckCredentialsId(prj, null, serverURL);
-        Assertions.assertThat(result.kind).isEqualTo(Kind.WARNING);
-        Assertions.assertThat(result.getMessage()).isEqualTo(Messages.emptyCredentialsId());
+        assertThat(result.kind).isEqualTo(Kind.WARNING);
+        assertThat(result.getMessage()).isEqualTo(Messages.emptyCredentialsId());
     }
 
     @Test
-    public void test_credentials_ok() throws Exception {
+    void test_credentials_ok() throws Exception {
         FreeStyleProject prj = r.createFreeStyleProject();
 
         String credentialsId = "secret";
@@ -134,7 +140,7 @@ public class GemSourceValidatorTest {
         String serverURL = "http://acme.com";
         DescriptorImpl descriptor = (DescriptorImpl) new GemSource(serverURL, credentialsId).getDescriptor();
         FormValidation result = descriptor.doCheckCredentialsId(prj, credentialsId, serverURL);
-        Assertions.assertThat(result.kind).isEqualTo(Kind.OK);
+        assertThat(result.kind).isEqualTo(Kind.OK);
     }
 
 }

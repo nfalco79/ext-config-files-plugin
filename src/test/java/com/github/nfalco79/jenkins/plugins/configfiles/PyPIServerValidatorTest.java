@@ -23,9 +23,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import com.cloudbees.plugins.credentials.Credentials;
 import com.cloudbees.plugins.credentials.CredentialsScope;
@@ -44,13 +45,18 @@ import hudson.util.FormValidation.Kind;
  *
  * @author Nikolas Falco
  */
+@WithJenkins
 public class PyPIServerValidatorTest {
 
-    @Rule
-    public JenkinsRule r = new JenkinsRule();
+    private static JenkinsRule r;
+
+    @BeforeAll
+    static void init(JenkinsRule rule) {
+        r = rule;
+    }
 
     @Test
-    public void test_empty_server_url() throws Exception {
+    void test_empty_server_url() throws Exception {
         DescriptorImpl descriptor = new DescriptorImpl();
 
         FormValidation result = descriptor.doCheckUrl("");
@@ -59,7 +65,7 @@ public class PyPIServerValidatorTest {
     }
 
     @Test
-    public void test_server_url_that_contains_variable() throws Exception {
+    void test_server_url_that_contains_variable() throws Exception {
         DescriptorImpl descriptor = new DescriptorImpl();
 
         FormValidation result = descriptor.doCheckUrl("${REGISTRY_URL}/root");
@@ -71,7 +77,7 @@ public class PyPIServerValidatorTest {
     }
 
     @Test
-    public void test_empty_server_url_is_ok() throws Exception {
+    void test_empty_server_url_is_ok() throws Exception {
         DescriptorImpl descriptor = new DescriptorImpl();
 
         FormValidation result = descriptor.doCheckUrl("http://acme.com");
@@ -79,7 +85,7 @@ public class PyPIServerValidatorTest {
     }
 
     @Test
-    public void test_server_url_invalid_protocol() throws Exception {
+    void test_server_url_invalid_protocol() throws Exception {
         DescriptorImpl descriptor = new DescriptorImpl();
 
         FormValidation result = descriptor.doCheckUrl("hpp://acme.com/root");
@@ -88,7 +94,7 @@ public class PyPIServerValidatorTest {
     }
 
     @Test
-    public void test_invalid_credentials() throws Exception {
+    void test_invalid_credentials() throws Exception {
         FreeStyleProject prj = r.createFreeStyleProject();
 
         String credentialsId = "secret";
@@ -106,7 +112,7 @@ public class PyPIServerValidatorTest {
     }
 
     @Test
-    public void test_empty_credentials() throws Exception {
+    void test_empty_credentials() throws Exception {
         FreeStyleProject prj = mock(FreeStyleProject.class);
         when(prj.hasPermission(isA(Permission.class))).thenReturn(true);
 
@@ -124,7 +130,7 @@ public class PyPIServerValidatorTest {
     }
 
     @Test
-    public void test_credentials_ok() throws Exception {
+    void test_credentials_ok() throws Exception {
         FreeStyleProject prj = r.createFreeStyleProject();
 
         String credentialsId = "secret";
