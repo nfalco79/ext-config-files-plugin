@@ -52,7 +52,7 @@
         <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
         <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
-        <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
 
         <sonar.organization>nfalco79</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
