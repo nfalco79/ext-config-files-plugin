@@ -16,48 +16,41 @@
  */
 package com.github.nfalco79.jenkins.plugins.configfiles;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 public class GemConfigValidationTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     @Test
-    public void test_new_config() {
+    void test_new_config() {
         String id = "test_id";
         GemConfig config = new GemConfig(id, "", "", "", null);
-        assertEquals(id, config.id);
-        assertNull(config.name);
-        assertNull(config.comment);
-        assertNull(config.content);
-        assertNotNull(config.getSources());
+        assertThat(config.id).isEqualTo(id);
+        assertThat(config.name).isNull();
+        assertThat(config.comment).isNull();
+        assertThat(config.content).isNull();
+        assertThat(config.getSources()).isNotNull();
     }
 
     @Test
-    public void test_empty_URL() throws Exception {
+    void test_empty_URL() throws Exception {
         GemSource source = new GemSource(null, null);
 
-        thrown.expect(VerifyConfigProviderException.class);
-
         GemConfig config = new GemConfig("empty_URL", null, null, null, Arrays.asList(source));
-        config.doVerify();
+        assertThatThrownBy(() -> config.doVerify()).isInstanceOf(VerifyConfigProviderException.class);
     }
 
     @Test
-    public void test_no_exception_if_URL_has_variable() throws Exception {
+    void test_no_exception_if_URL_has_variable() throws Exception {
         GemSource source = new GemSource("${URL}", null);
 
         GemConfig config = new GemConfig("no_exception_if_URL_has_variable", null, null, null, Arrays.asList(source));
-        config.doVerify();
+        assertThatNoException().isThrownBy(() -> config.doVerify());
     }
 
 }

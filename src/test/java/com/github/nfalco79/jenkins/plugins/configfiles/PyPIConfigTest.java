@@ -16,32 +16,39 @@
  */
 package com.github.nfalco79.jenkins.plugins.configfiles;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.jenkinsci.lib.configprovider.model.Config;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import com.github.nfalco79.jenkins.plugins.configfiles.PyPIConfig.PyPIConfigProvider;
 
 import hudson.model.Descriptor;
 
+@WithJenkins
 public class PyPIConfigTest {
 
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
+    private static JenkinsRule r;
+
+    @BeforeAll
+    static void init(JenkinsRule rule) {
+        r = rule;
+    }
 
     @Test
-    public void test_load_template() {
-        Descriptor<?> descriptor = j.jenkins.getDescriptor(PyPIConfig.class);
-        Assertions.assertThat(descriptor).isNotNull() //
+    void test_load_template() {
+        Descriptor<?> descriptor = r.jenkins.getDescriptor(PyPIConfig.class);
+        assertThat(descriptor).isNotNull() //
                 .describedAs("Unexpected descriptor class").isInstanceOf(PyPIConfigProvider.class);
 
         PyPIConfigProvider provider = (PyPIConfigProvider) descriptor;
         Config config = provider.newConfig("testId");
-        Assertions.assertThat(config).isNotNull() //
+        assertThat(config).isNotNull() //
                 .describedAs("Unexpected config class").isInstanceOf(PyPIConfig.class);
-        Assertions.assertThat(config.content).describedAs("Expected the default template, instead got empty").isNotBlank();
+        assertThat(config.content).describedAs("Expected the default template, instead got empty").isNotBlank();
     }
 
 }

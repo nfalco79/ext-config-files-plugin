@@ -16,32 +16,39 @@
  */
 package com.github.nfalco79.jenkins.plugins.configfiles;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.jenkinsci.lib.configprovider.model.Config;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import com.github.nfalco79.jenkins.plugins.configfiles.GemConfig.GemConfigProvider;
 
 import hudson.model.Descriptor;
 
+@WithJenkins
 public class GemConfigTest {
 
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
+    private static JenkinsRule j;
+
+    @BeforeAll
+    static void init(JenkinsRule rule) {
+        j = rule;
+    }
 
     @Test
-    public void test_load_template() {
+    void test_load_template() {
         Descriptor<?> descriptor = j.jenkins.getDescriptor(GemConfig.class);
-        Assertions.assertThat(descriptor).isNotNull() //
+        assertThat(descriptor).isNotNull() //
                 .describedAs("Unexpected descriptor class").isInstanceOf(GemConfigProvider.class);
 
         GemConfigProvider provider = (GemConfigProvider) descriptor;
         Config config = provider.newConfig("testId");
-        Assertions.assertThat(config).isNotNull() //
+        assertThat(config).isNotNull() //
                 .describedAs("Unexpected config class").isInstanceOf(GemConfig.class);
-        Assertions.assertThat(config.content).describedAs("Expected the default template, instead got empty").isNotBlank();
+        assertThat(config.content).describedAs("Expected the default template, instead got empty").isNotBlank();
     }
 
 }

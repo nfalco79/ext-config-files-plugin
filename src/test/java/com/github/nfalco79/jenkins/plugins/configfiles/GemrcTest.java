@@ -16,8 +16,7 @@
  */
 package com.github.nfalco79.jenkins.plugins.configfiles;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,24 +24,22 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
-import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class GemrcTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    private File tmpFolder;
     private File file;
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeEach
+    void setUp() throws IOException {
         InputStream is = null;
         try {
             is = getClass().getResourceAsStream("gemrc.config");
-            file = folder.newFile(".gemrc");
+            file = new File(tmpFolder, ".gemrc");
             hudson.util.IOUtils.copy(is, file);
         } finally {
             IOUtils.closeQuietly(is);
@@ -50,21 +47,21 @@ public class GemrcTest {
     }
 
     @Test
-    public void testLoad() throws Exception {
+    void testLoad() throws Exception {
         Gemrc gemrc = Gemrc.load(file);
-        assertTrue(gemrc.contains(":backtrace"));
-        Assertions.assertThat(gemrc.getSources()).isNotNull().isNotEmpty();
-        Assertions.assertThat(gemrc.getSources()).contains("https://test:password@gemsource.com/artifactory/api/gems/gems-release/");
+        assertThat(gemrc.contains(":backtrace")).isTrue();
+        assertThat(gemrc.getSources()).isNotNull().isNotEmpty();
+        assertThat(gemrc.getSources()).contains("https://test:password@gemsource.com/artifactory/api/gems/gems-release/");
     }
 
     @Test
-    public void testAvoidParseError() throws Exception {
+    void testAvoidParseError() throws Exception {
         Gemrc gemrc = Gemrc.load(file);
-        assertFalse(gemrc.getAsBoolean(":backtrace"));
+        assertThat(gemrc.getAsBoolean(":backtrace")).isFalse();
     }
 
     @Test
-    public void testSave() throws Exception {
+    void testSave() throws Exception {
         String option = ":backtrace";
         Object optionValue = true;
         URL source = new URL("https://api.gemsource.com/api/gems/gems-release");
@@ -76,14 +73,14 @@ public class GemrcTest {
 
         // reload content
         gemrc = Gemrc.load(file);
-        assertTrue(gemrc.contains(option));
-        Assertions.assertThat(gemrc.getAsBoolean(option)).isEqualTo(optionValue);
-        Assertions.assertThat(gemrc.getSources()).hasSize(2);
-        Assertions.assertThat(gemrc.getSources()).contains(source.toString());
+        assertThat(gemrc.contains(option)).isTrue();
+        assertThat(gemrc.getAsBoolean(option)).isEqualTo(optionValue);
+        assertThat(gemrc.getSources()).hasSize(2);
+        assertThat(gemrc.getSources()).contains(source.toString());
     }
 
     @Test
-    public void testOptions() throws Exception {
+    void testOptions() throws Exception {
         String option = ":backtrace";
         Object optionValue = true;
         URL source = new URL("https://api.gemsource.com/api/gems/gems-release");
@@ -93,8 +90,8 @@ public class GemrcTest {
         gemrc.addSource(source);
 
         String content = gemrc.toString();
-        Assertions.assertThat(content).describedAs("explict start was not set").startsWith("---");
-        Assertions.assertThat(content).describedAs("array values style is not set to flow block") //
+        assertThat(content).describedAs("explict start was not set").startsWith("---");
+        assertThat(content).describedAs("array values style is not set to flow block") //
                 .contains("- https://api.gemsource.com/api/gems/gems-release");
     }
 

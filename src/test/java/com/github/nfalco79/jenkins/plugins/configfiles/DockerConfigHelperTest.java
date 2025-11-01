@@ -16,17 +16,16 @@
  */
 package com.github.nfalco79.jenkins.plugins.configfiles;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.CredentialsScope;
@@ -37,21 +36,26 @@ import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
 
 import hudson.model.FreeStyleBuild;
 
+@WithJenkins
 public class DockerConfigHelperTest {
 
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
+    private static JenkinsRule j;
     private StandardUsernamePasswordCredentials user;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeAll
+    static void init(JenkinsRule rule) {
+        j = rule;
+    }
+
+    @BeforeEach
+    void setUp() throws Exception {
         user = new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, "privateId", "dummy desc", "myuser", "mypassword");
         CredentialsStore store = CredentialsProvider.lookupStores(j.getInstance()).iterator().next();
         store.addCredentials(Domain.global(), user);
     }
 
     @Test
-    public void test_registry_credentials_resolution() throws Exception {
+    void test_registry_credentials_resolution() throws Exception {
         DockerRegistry privateRegistry = new DockerRegistry("https://private.organization.com/", user.getId());
         DockerRegistry officalRegistry = new DockerRegistry("https://registry.npmjs.org/", null);
 
@@ -59,10 +63,9 @@ public class DockerConfigHelperTest {
 
         DockerConfigHelper helper = new DockerConfigHelper(Arrays.asList(privateRegistry, officalRegistry));
         Map<String, StandardUsernamePasswordCredentials> resolvedCredentials = helper.resolveCredentials(build);
-        assertFalse(resolvedCredentials.isEmpty());
-        assertEquals(1, resolvedCredentials.size());
+        assertThat(resolvedCredentials).isNotEmpty().hasSize(1);
 
-        Assertions.assertThat(resolvedCredentials).containsKey(privateRegistry.getUrl()).containsValue(user);
+        assertThat(resolvedCredentials).containsKey(privateRegistry.getUrl()).containsValue(user);
     }
 
 }

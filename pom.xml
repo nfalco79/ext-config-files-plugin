@@ -3,7 +3,8 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.78</version>
+        <version>5.27</version>
+        <relativePath />
     </parent>
 
     <groupId>com.github.nfalco79</groupId>
@@ -41,11 +42,12 @@
 
     <properties>
         <java.level>17</java.level>
-        <jenkins.version>2.440.1</jenkins.version>
-        <sonar.organization>nfalco79</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <checkstyle.version>12.1.1</checkstyle.version>
+
+        <jenkins.baseline>2.504</jenkins.baseline>
+        <jenkins.version>${jenkins.baseline}.3</jenkins.version>
         <releaseProfiles>release</releaseProfiles>
-        <checkstyle.version>10.13.0</checkstyle.version>
+        <ban-junit4-imports.skip>false</ban-junit4-imports.skip>
 
         <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
         <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
@@ -238,6 +240,21 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>eclipse</id>
+            <activation>
+                <property>
+                    <name>m2e.version</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- because eclipse generate a JUnit5 run configuration with placeholder not replaced in the jvm argument section! -->
+                <surefire.forkNumber>1</surefire.forkNumber>
+                <jenkins.javaAgent />
+                <jenkins.insaneHook />
+                <jenkins.addOpens />
+            </properties>
         </profile>
     </profiles>  
 </project>
