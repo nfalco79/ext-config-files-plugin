@@ -13,6 +13,7 @@
     <packaging>hpi</packaging>
     <name>Extension of config files provider Plugin</name>
     <description>Extension of config files provider plugin to manage other kind of configuration files with credentials.</description>
+    <url>https://github.com/nfalco79/ext-config-files-plugin</url>
 
     <licenses>
         <license>
@@ -30,11 +31,11 @@
     </developers>
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/nfalco79/ext-config-files-plugin/issues</url>
+        <url>${project.url}/issues</url>
     </issueManagement>
 
     <scm>
-        <url>https://github.com/nfalco79/ext-config-files-plugin</url>
+        <url>${project.url}</url>
         <connection>scm:git:git@github.com:nfalco79/ext-config-files-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:nfalco79/ext-config-files-plugin.git</developerConnection>
         <tag>ext-configfiles-1.0.2</tag>
@@ -43,14 +44,13 @@
     <properties>
         <java.level>17</java.level>
         <checkstyle.version>12.1.1</checkstyle.version>
-
         <jenkins.baseline>2.504</jenkins.baseline>
         <jenkins.version>${jenkins.baseline}.3</jenkins.version>
         <releaseProfiles>release</releaseProfiles>
         <ban-junit4-imports.skip>false</ban-junit4-imports.skip>
 
         <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
-        <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
+        <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
 
@@ -70,23 +70,13 @@
             <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.440.x</artifactId>
-                <version>2815.vf5d6f093b_23e</version>
+                <artifactId>bom-${jenkins.baseline}.x</artifactId>
+                <version>5543.vfd758c7c868d</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -136,6 +126,15 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.9.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>ossrh</publishingServerId>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
